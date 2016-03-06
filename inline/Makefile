@@ -4,10 +4,10 @@ srcs=main.c
 all: diff diff_c99
 
 diff: use_inline unuse_inline 
-	diff use_inline.s unuse_inline.s 
+	diff use_inline.s unuse_inline.s ||exit 0
 
 diff_c99: use_inline_c99 unuse_inline_c99
-	diff use_inline_c99.s unuse_inline_c99.s 
+	diff use_inline_c99.s unuse_inline_c99.s ||exit 0
 
 unuse_inline: $(srcs)
 	$(CC) -O0 -S $< -o $@.s
