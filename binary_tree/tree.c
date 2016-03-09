@@ -69,3 +69,7 @@ unit_test()
 }
 
 
+void
+unit_test()
+{
+}
