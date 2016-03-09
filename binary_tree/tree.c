@@ -9,10 +9,10 @@ typedef struct Node {
     int data;
 } Node, *pNode;
 
-pNode
+static pNode
 new(int data);
 
-int
+static int
 add(pNode node, pNode root);
 
 void
@@ -28,7 +28,7 @@ int main(int argc, const char *argv[])
 #endif
     return 0;
 }
-pNode
+static pNode
 new(int data)
 {
     pNode node = NULL;
@@ -39,7 +39,7 @@ new(int data)
     return node;
 }
 
-int
+static int
 add(pNode node, pNode root)
 {
     if( root == node)
