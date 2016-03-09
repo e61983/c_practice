@@ -19,6 +19,9 @@ add(pNode node, pNode root);
 static int
 show(pNode root);
 
+static pNode
+find(int data, pNode root);
+
 void
 unit_test();
 
@@ -42,6 +45,10 @@ int main(int argc, const char *argv[])
     add(node_8, node_19);
     add(node_15, node_19);
     show(node_19);
+    pNode node_find=NULL;
+    if(NULL != (node_find= find(52,node_19))){
+        printf("Find %d at %p\n",node_find->data,node_find );
+    }
 #ifdef DEBUG
     unit_test();
 #endif
@@ -103,7 +110,19 @@ show(pNode root)
     }
     return count--;
 }
+static pNode
+find(int data, pNode root)
+{
+    if(NULL == root) return NULL;
+    for(pNode current = root;
+            current!=NULL;
+            current = data > current->data? current->right:current->left) {
+        if(data==current->data)return current;
 
+    }
+    return NULL;
+
+}
 
 void
 unit_test()
