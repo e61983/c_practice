@@ -2,77 +2,85 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-static void in_swap(pList node1, pList node2) ;
-pList new() {
+pList new()
+{
+    static int member = 0;
     pList node = NULL;
-    
-    if (NULL == (node = malloc(sizeof(struct List))))
+    if (NULL == (node = malloc(sizeof(struct List)))) {
         return NULL;
-        
-    node->value = 0;
+    }
+    node->value = member++;
     node->next = NULL;
     return node;
 }
 
-int add(pList head, pList node) {
-    if(!(node && head)) return 1;
-    
-    node->next = head->next;
-    head->next = node;
+int add(pList *head, pList node)
+{
+    if(*head == node) {
+        return 1;
+    }
+    pList *current = head;
+    while(*current != NULL) {
+        current = &(*current)->next;
+    }
+    *current = node;
     return 0;
 }
 
-int show(pList head) {
-    unsigned int lenth = 0;
-    
-    for(pList node = head; node != NULL;
-            node = node->next, lenth++) {
-        printf("%d -> ", node->value);
+int delete(pList *head, pList node)
+{
+    pList *current = head;
+    while(*current != node) {
+        current = &(*current)->next;
     }
-    
-    printf("\n");
-    return lenth;
+    *current = node->next;
+    return 0;
 }
 
-pList swap(pList head, pList node1, pList node2) {
-    if(!(head && node1 && node2)) return head;
-    
-    if(node1 == node2)return head;
-    
-    pList pre_node1 = NULL;
-    pList pre_node2 = NULL;
-    
-    for(pList node = head; node != NULL && !(pre_node1
-            && pre_node2) ; node = node->next) {
-        if(node1 == node->next) pre_node1 = node;
-        
-        if(node2 == node->next) pre_node2 = node;
+void show(pList head)
+{
+    for(int i = 1; head != NULL; i++) {
+        printf("index : %02d\t%02d(%p)->(%p)\r\n", i, head->value, head, head->next);
+        head = head->next;
     }
-    
-    if(head == node1 && pre_node2 ) {
-        pre_node2->next = node1;
-        in_swap(node1, node2);
-        return node2;
-    }
-    
-    if(head == node2 && pre_node1) {
-        pre_node1->next = node2;
-        in_swap(node1, node2);
-        return node1;
-    }
-    
-    if(!(pre_node1 && pre_node2))return head;
-    
-    pre_node1->next = node2;
-    pre_node2->next = node1;
-    in_swap(node1, node2);
-
-    return head;
 }
 
-static void in_swap(pList node1, pList node2) {
-    pList tmp = node1->next;
-    node1->next = node2->next;
-    node2->next = tmp;
+pList swap(pList *head, pList node1, pList node2)
+{
+    pList tmp = NULL;
+    pList *current = head;
+    pList *pre_node1 = NULL;
+    pList *pre_node2 = NULL;
+    if(node1 == NULL || node2 == NULL) {
+        return *head;
+    }
+    if(node1 == node2) {
+        return *head;
+    }
+    while(*current != NULL && (pre_node1 == NULL || pre_node2 == NULL)) {
+        if(*current == node1) {
+            pre_node1 = current;
+        }
+        if(*current == node2) {
+            pre_node2 = current;
+        }
+        current = &(*current)->next;
+    }
+    tmp = (*pre_node1)->next;
+    (*pre_node1)->next = (*pre_node2)->next;
+    (*pre_node2)->next = tmp;
+    tmp = *pre_node1;
+    *pre_node1 = *pre_node2;
+    *pre_node2 = tmp;
+    return *head;
+}
+
+pList get(pList head, int index)
+{
+    pList tmp = head;
+    for(int i = 0; (i < index - 1) && (tmp) != NULL; i++) {
+        tmp = tmp->next;
+    }
+    return tmp;
 }
 
